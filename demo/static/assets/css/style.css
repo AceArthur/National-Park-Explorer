@@ -1,0 +1,122 @@
+.panel-result {
+  cursor: pointer;
+  margin: 2px 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 7px 10px;
+  list-style: none;
+/*  transition: display 0.5 ease;
+  -webkit-transition: display 0.5 ease;
+  -ms-transition: display 0.5 ease;
+*/}
+
+.tweet-result {
+  cursor: pointer;
+  margin: 2px 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 7px 10px;
+  list-style: none;
+  transition: display 0.5 ease;
+  -webkit-transition: display 0.5 ease;
+  -ms-transition: display 0.5 ease;
+
+
+}
+
+
+#np_list {
+  padding-left: 0px;
+    
+}
+
+/*.panel-result-ani {
+  transition: text-shadow 1s ease, opacity 1s ease, color 1s ease;
+  -webkit-transition: text-shadow 1s ease, opacity 1s ease, color 1s ease;
+  -ms-transition: text-shadow 1s ease, opacity 1s ease, color 1s ease;
+}*/
+
+/*.panel-result:hover, .panel-result:focus {
+
+ }
+*/
+
+/* {
+  cursor: pointer;
+  outline: thin dotted;
+  outline: 5px auto -webkit-focus-ring-color;
+  outline-offset: -2px; 
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(25, 111, 166, 0.6);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(25, 111, 166, 0.6); }
+}*/
+
+
+.panel-result:hover, .panel-result:focus, .hightlight {
+  /*color: #005e95;*/
+  outline: thin dotted;
+  outline: 5px auto -webkit-focus-ring-color;
+  outline-offset: -2px; 
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(25, 111, 166, 0.6);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(25, 111, 166, 0.6); }
+}
+
+
+/*.panel-result:hover,
+.panel-result:focus {
+
+  color: #166090;
+  background-color: rgba(0, 0, 0, 0.8);
+  text-shadow: 0 0 3px, 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff;
+  opacity: 0.5;
+}
+*/
+
+#slider {
+  bottom: 20px;
+}
+
+.fancybox-skin {
+  /*background: rgba(0,0,0,0.6);*/
+  background: rgba(0,0,0,0.6);
+  /*background-color: rgba(0,0,0,0.4) !important;*/
+
+
+}
+
+#wordcloud > span.chosen {
+  color: #166090 !important;
+/*  text-shadow: 0 0 10px, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff;
+  opacity: 0.5 !important;*/
+  /*background-color: rgba(0, 0, 0, 0.75);*/
+}
+
+
+#wordcloud {
+  background-color: rgba(0,0,0,0) !important;
+  width: 650px;
+  height: 400px;
+
+}
+
+#wordcloud > span {
+  transition: text-shadow 1s ease, opacity 1s ease, color 1s ease;
+  -webkit-transition: text-shadow 1s ease, opacity 1s ease, color 1s ease;
+  -ms-transition: text-shadow 1s ease, opacity 1s ease, color 1s ease;
+  cursor: pointer;
+}
+
+#wordcloud > span:hover {
+  cursor: pointer;
+  color: #166090 !important;
+  text-shadow: 0 0 10px, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff;
+  opacity: 0.5;
+}
+
+
+
+.count {
+  color: #166090;
+  text-align: right;
+  padding-right: 0px;
+  font-size: 2.5em;
+}
+
+

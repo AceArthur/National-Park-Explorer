@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <!-- Lock viewport to prevent scaling -->
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="description" content="ESRI Parkfinder">
+  <meta name="author" content="Bo Yan">
+  <title>National Park Explorer</title>
+  
+  <link rel="stylesheet" href="./static/assets/css/odometer-theme-default.css" />
+  <!-- Calcite Bootstrap -->
+  <link rel="stylesheet" href="./static/assets/css/calcite-bootstrap.min-v0.2.css">
+  <!-- Calcite Maps -->
+  <link rel="stylesheet" href="./static/assets/css/calcite-maps-arcgis-4.x.min-v0.2.css">
+  <link href="https://js.arcgis.com/4.0/esri/css/main.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="./static/assets/css/jquery.fancybox.css" type="text/css" media="screen" />
+  <link rel="stylesheet" type="text/css" href="./static/assets/css/style.css">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
+  <script src="./static/assets/js/odometer.min.js"></script>
+  <script src="./static/assets/js/socket.io.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <script type="text/javascript" src="./static/assets/js/wordcloud2.js"></script>
+  <script type="text/javascript" src="./static/assets/js/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript">
+  var dojoConfig = {
+    packages: [{
+      name: "bootstrap",
+      location: "http://esri.github.com/calcite-maps/dist/vendor/dojo-bootstrap"
+    }, {
+      name: "calcite-maps",
+      location: "http://esri.github.com/calcite-maps/dist/js/dojo"
+    }]
+  };
+  </script>
+  <script src="https://js.arcgis.com/4.0"></script>
+  <script type="text/javascript" src="./static/assets/js/map.js"></script>
+</head>
+
+<body class="calcite-nav-top calcite-zoom-top-left">
+  <div id="wordcloud" style="display:none;"></div>
+  <!-- Navbar -->
+  <nav class="navbar calcite-navbar calcite-bg-custom calcite-text-light navbar-fixed-top" style="background-color: rgba(0, 0, 0, 0.74902); display:none;">
+    <!-- Menu -->
+    <div class="dropdown calcite-dropdown calcite-bg-light calcite-text-dark" role="presentation">
+      <!--a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"-->
+      <a class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false">
+        <div class="calcite-dropdown-toggle">
+          <span class="sr-only">Toggle dropdown menu</span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </a>
+      <ul class="dropdown-menu">
+        <li><a role="button" aria-haspopup="true" id="wordcloudBtn"><span class="glyphicon glyphicon-tags"></span> Word Cloud</a></li>
+        <li><a role="button" data-target="#panelInfo" aria-haspopup="true"><span class="glyphicon glyphicon-list-alt"></span> Park List</a></li>
+        <li><a role="button" data-target="#tweetInfo" aria-haspopup="true"><span class="glyphicon glyphicon glyphicon-globe"></span> Live Tweets</a></li>
+        <li><a class="visible-xs" role="button" data-target="#panelSearch" aria-haspopup="true"><span class="glyphicon glyphicon-search"></span> Search</a></li>
+        <!-- <li><a role="button" data-target="#panelBasemaps" aria-haspopup="true"><span class="glyphicon glyphicon-th-large"></span> Basemaps</a></li> -->
+        <li><a role="button" data-target="#panelSettings" aria-haspopup="true"><span class="glyphicon glyphicon-cog"></span> Options</a></li>
+        <li><a role="button" id="calciteToggleNavbar" aria-haspopup="true"><span class="glyphicon glyphicon-fullscreen"></span> Full Map</a></li>
+      </ul>
+    </div>
+    <!-- Title -->
+    <div class="calcite-title calcite-overflow-hidden">
+      <span class="calcite-title-main">National Park Explorer</span>
+      <!--       <span class="calcite-title-divider hidden-xs"></span>
+      <span class="calcite-title-sub hidden-xs">Design map apps and explore styles interactively</span>
+ --></div>
+    <!-- Nav -->
+    <ul class="calcite-nav nav navbar-nav">
+      <li>
+        <div class="calcite-navbar-search calcite-search-expander">
+          <div id="searchNavDiv"></div>
+        </div>
+      </li>
+    </ul>
+  </nav>
+  <!--/.navbar -->
+  <!-- Map Container  -->
+  <div class="calcite-map calcite-map-absolute">
+    <!-- <div id="tabContainer" class="tab-content"> -->
+    <!-- <div id="3dTab" class="tab-pane fade in active" role="tabpanel"> -->
+    <div id="viewDiv"></div>
+    <!-- </div> -->
+    <!-- </div> -->
+  </div>
+  <!-- Panel Container -->
+  <div class="calcite-panels calcite-panels-right calcite-bg-custom calcite-text-light panel-group" role="tablist" aria-multiselectable="true" style="background-color: rgba(0, 0, 0, 0.54);">
+    <div id="panelInfo" class="panel collapse in" style="display:none;">
+      <div id="headingInfo" class="panel-heading" role="tab">
+        <div class="panel-title">
+          <a class="panel-toggle" role="button" data-toggle="collapse" href="#collapseInfo" aria-expanded="true" aria-controls="collapseInfo"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span><span class="panel-label">National Park List</span></a>
+          <a class="panel-close" role="button" data-toggle="collapse" data-target="#panelInfo"><span class="esri-icon esri-icon-close" aria-hidden="true"></span></a>
+        </div>
+      </div>
+      <div id="collapseInfo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingInfo">
+        <div class="panel-body">
+          <ul id="np_list">
+            <li style="list-style: none;">Loading&hellip;</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- Panel - Search -->
+    <div id="panelSearch" class="panel collapse hidden-sm hidden-md hidden-lg">
+      <div id="headingSearch" class="panel-heading" role="tab">
+        <div class="panel-title">
+          <a class="panel-toggle collapsed" role="button" data-toggle="collapse" href="#collapseSearch" aria-expanded="false" aria-controls="collapseSearch"><span class="glyphicon glyphicon-search" aria-hidden="true"></span><span class="panel-label">Search</span></a>
+          <a class="panel-close" role="button" data-toggle="collapse" data-target="#panelSearch"><span class="esri-icon esri-icon-close" aria-hidden="true"></span></a>
+        </div>
+      </div>
+      <div id="collapseSearch" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSearch">
+        <div class="panel-body calcite-body-expander">
+          <div id="searchPanelDiv"></div>
+        </div>
+      </div>
+    </div>
+    <!-- Panel - Legend -->
+    <div id="panelLegend" class="panel collapse">
+      <div id="headingLegend" class="panel-heading" role="tab">
+        <div class="panel-title">
+          <a class="panel-toggle collapsed" role="button" data-toggle="collapse" href="#collapseLegend" aria-expanded="false" aria-controls="collapseLegend"><span class="glyphicon glyphicon-list" aria-hidden="true"></span><span class="panel-label">Legend</span></a>
+          <a class="panel-close" role="button" data-toggle="collapse" data-target="#panelLegend"><span class="esri-icon esri-icon-close" aria-hidden="true"></span></a>
+        </div>
+      </div>
+      <div id="collapseLegend" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingLegend">
+        <div class="panel-body">
+          <div id="legendDiv"></div>
+        </div>
+      </div>
+    </div>
+    <!-- Panel - Settings -->
+    <div id="panelSettings" class="panel collapse">
+      <div id="headingSettings" class="panel-heading">
+        <div class="panel-title">
+          <a class="panel-toggle" role="button" data-toggle="collapse" href="#collapseSettings" aria-expanded="true" aria-controls="collapseSettings"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span><span class="panel-label">Options</span></a>
+          <a class="panel-close" role="button" data-toggle="collapse" data-target="#panelSettings"><span class="esri-icon esri-icon-close" aria-hidden="true"></span></a>
+        </div>
+      </div>
+      <div id="collapseSettings" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSettings">
+        <div class="panel-body">
+          <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#map" aria-controls="map" role="tab" data-toggle="tab">Basemaps</a></li>
+            <li role="presentation"><a href="#theme" aria-controls="theme" role="tab" data-toggle="tab">Layers</a></li>
+          </ul>
+          <div class="tab-content">
+            <!-- Tab - BaseMap -->
+            <div role="tabpanel" class="tab-pane active" id="map">
+              <div class="calcite-form-title">Choose a basemap</div>
+              <div class="form-horizontal calcite-form-padding">
+                <div class="form-group">
+                  <!-- <label for="settingsSelectBasemap" class="col-xs-3 control-label">Basemap</label> -->
+                  <div class="col-xs-12">
+                    <select id="settingsSelectBasemap" class="form-control">
+                      <option selected="selected" id="Toner">Toner</option>
+                      <option id="Hybrid">Hybrid</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Tab - layers -->
+            <div role="tabpanel" class="tab-pane" id="theme">
+              <div class="calcite-form-title">Select layers</div>
+              <div class="form-horizontal calcite-form-padding">
+                <div class="form-group">
+                  <!-- <label for="settingsView" class="col-xs-3 control-label">View</label> -->
+                  <div class="col-xs-12">
+                    <label class="checkbox-inline">
+                      <input type="checkbox" id="tweetLyr" checked> Live Tweets
+                    </label>
+                    <label class="checkbox-inline">
+                      <input type="checkbox" id="elevationLyr"> Elevation
+                    </label>
+                    <label class="checkbox-inline">
+                      <input type="checkbox" id="heatmapLyr"> Heat Map
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /.tab-content -->
+        </div>
+        <!-- /.panel-body -->
+      </div>
+      <!-- /.panel-collapse -->
+    </div>
+    <!-- /.panel -->
+  </div>
+  <div class="calcite-panels calcite-panels-left calcite-bg-custom calcite-text-light panel-group" role="tablist" aria-multiselectable="true" style="background-color: rgba(0, 0, 0, 0.54);">
+    <div id="tweetInfo" class="panel collapse in" style="display:none;">
+      <div id="headingTweet" class="panel-heading" role="tab">
+        <div class="panel-title">
+          <a class="panel-toggle" role="button" data-toggle="collapse" href="#collapseTweet" aria-expanded="true" aria-controls="collapseTweet"><span class="glyphicon glyphicon glyphicon-globe" aria-hidden="true"></span><span class="panel-label">Live Tweets &amp; Sentiment</span></a>
+          <a class="panel-close" role="button" data-toggle="collapse" data-target="#tweetInfo"><span class="esri-icon esri-icon-close" aria-hidden="true"></span></a>
+        </div>
+      </div>
+      <div id="collapseTweet" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTweet">
+        <div class="form-horizontal calcite-form-padding">
+          <div class="form-group" style="margin-top: 10px; margin-bottom: 0px !important;">
+            <div class="col-xs-5 odometer odometer-auto-theme count" id="odometer">9</div>
+            <div class="col-xs-7" style="text-align:center;">
+              <h4 style="margin-top: 9px;">Live Tweets</h4>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body" style="padding-top:0px !important;">
+          <ul id="tweet_list" style="padding: 0px 10px 0px 10px;">
+            <li style="list-style: none;">Retrieving&hellip;</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="calcite-panels calcite-panels-left calcite-bg-custom calcite-text-light panel-group" role="tablist" aria-multiselectable="true" style="background-color: rgba(0, 0, 0, 0.54); top: 80%;left: 35%;">
+    <div id="heatMapSlider" class="panel collapse in" style="display:none">
+      <div id="headingHeatMapSlider" class="panel-heading" role="tab">
+        <div class="panel-title">
+          <a class="panel-toggle" role="button" data-toggle="collapse" href="#collapseSlider" aria-expanded="true" aria-controls="collapseSlider"><span class="glyphicon glyphicon glyphicon-globe" aria-hidden="true"></span><span class="panel-label">Heat Map Slider</span></a>
+          <a class="panel-close" role="button" data-toggle="collapse" data-target="#heatMapSlider" style="display:none;"><span class="esri-icon esri-icon-close" aria-hidden="true"></span></a>
+        </div>
+      </div>
+      <div id="collapseTweet" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingHeatMapSlider">
+        <div class="panel-body">
+        <input type="text" id="sliderTime" readonly style="border: 0px;padding-bottom: 10px;">
+          <div id="slider"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /.calcite-panels group-->
+</body>

@@ -195,15 +195,15 @@ with open('./search_term2.txt') as f:  # encoding='ISO-8859-1') as f:
             if term != '' and term is not None:
                 search_list_2.append(term)
 
-access_token_1 = "404869143-55RXNghkqduLKgPJUTXlZQPW1mWXViPxPYdJnOwl"
-access_token_secret_1 = "4vjelNZEJNuYmXMUH7B7PrzLO8kPTU3flr3mJhsQ7XIEH"
-consumer_key_1 = "1YGL5yqIs3MkKyHWiAI1R3WCs"
-consumer_secret_1 = "zYd814I2fZy2izbBQh0816djXkEKbL1Wj3ezmWrqJSiCxf3BwU"
+access_token_1 = ""
+access_token_secret_1 = ""
+consumer_key_1 = ""
+consumer_secret_1 = ""
 
-access_token_2 = "2717764046-BYfA50OWEb0kuE5CjyMO4nXVtlDFLrKF953TSAy"
-access_token_secret_2 = "D19SkuzmsOmAlmm54vUm50KqMKaVJBACaC4yVyWE01Ny6"
-consumer_key_2 = "V7m5d1bxGzJiNn4j8E2XrHCXx"
-consumer_secret_2 = "zbJvjgBJv2x10sGkmjNE2eja9l4u23HYX8SwZxY3yFA5vwvBGL"
+access_token_2 = ""
+access_token_secret_2 = ""
+consumer_key_2 = ""
+consumer_secret_2 = ""
 
 tw_NPAT_dict = {}
 tw_ID_COUNT_dict = {}
